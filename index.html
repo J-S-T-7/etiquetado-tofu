@@ -4,32 +4,38 @@
     <meta charset="UTF-8">
     <title>Generador Etiquetas Vegusta</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #ddd; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .no-print { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 20px; width: 400px; text-align: center; }
+        body { font-family: Arial, sans-serif; background: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .no-print { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         
-        /* LA ETIQUETA ORIGINAL COMO FONDO */
+        /* CONTENEDOR DE LA ETIQUETA */
         #etiqueta-real {
             width: 1000px; 
             height: 600px;
             position: relative;
-            background-image: url('image_39695b.png'); /* Busca el archivo que subiste a GitHub */
-            background-size: 100% 100%;
+            background-image: url('image_39695b.png?v=1.1'); /* El ?v=1.1 fuerza la carga */
+            background-size: contain;
             background-repeat: no-repeat;
+            background-position: center;
             background-color: white;
+            overflow: hidden;
         }
 
-        .dato { position: absolute; font-weight: bold; color: black; line-height: 1; background: white; }
+        /* BLOQUES QUE REEMPLAZAN LOS DATOS */
+        .dato { position: absolute; font-weight: bold; color: black; background: white; display: flex; align-items: center; justify-content: center; }
         
-        /* AJUSTE DE POSICIONES SOBRE LA IMAGEN */
-        #pos-barcode-main { top: 168px; left: 240px; background: white; padding: 2px; }
-        #pos-val-barcode-main { top: 342px; left: 375px; font-size: 48px; letter-spacing: 4px; width: 330px; text-align: center; }
+        /* Código de barras grande */
+        #pos-barcode-main { top: 165px; left: 245px; width: 510px; height: 160px; }
+        #pos-val-barcode-main { top: 335px; left: 350px; width: 300px; font-size: 50px; letter-spacing: 5px; height: 60px; }
         
-        #pos-formato { top: 408px; left: 300px; font-size: 42px; font-weight: 900; width: 450px; text-align: center; }
+        /* Texto del producto */
+        #pos-formato { top: 405px; left: 250px; width: 500px; font-size: 44px; font-weight: 900; height: 50px; }
         
-        #pos-barcode-lote { top: 458px; left: 62px; background: white; }
-        #pos-val-lote { top: 535px; left: 135px; font-size: 32px; width: 180px; text-align: center; }
+        /* Código de barras pequeño (Lote) */
+        #pos-barcode-lote { top: 465px; left: 60px; width: 350px; height: 75px; }
+        #pos-val-lote { top: 535px; left: 130px; width: 220px; font-size: 34px; height: 40px; }
         
-        #pos-vencimiento { top: 482px; right: 100px; font-size: 30px; font-weight: 900; width: 200px; text-align: center; }
+        /* Fecha de Vencimiento */
+        #pos-vencimiento { top: 480px; right: 100px; width: 200px; font-size: 32px; font-weight: 900; height: 40px; }
 
         @media print {
             .no-print { display: none; }
@@ -37,30 +43,33 @@
             #etiqueta-real { border: none; margin: 0; }
         }
         
-        select, input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
-        button { background: #000; color: white; cursor: pointer; font-weight: bold; }
+        select, input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; outline: none; }
+        button { background: #e74c3c; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #c0392b; }
     </style>
 </head>
 <body>
 
 <div class="no-print">
-    <h3>PANEL DE CONTROL</h3>
+    <h2 style="margin-top:0">Vegusta Etiquetado</h2>
+    <label style="font-size: 12px; color: #666;">Selecciona Formato:</label>
     <select id="producto" onchange="actualizar()">
         <option value="500 GR">TOFU 500 GR</option>
         <option value="1 KG">TOFU 1 KG</option>
     </select>
+    <label style="font-size: 12px; color: #666; display: block; margin-top: 10px;">Fecha Elaboración:</label>
     <input type="date" id="fechaInput" onchange="actualizar()">
-    <button onclick="window.print()">IMPRIMIR ETIQUETA ORIGINAL</button>
+    <button onclick="window.print()">GENERAR ETIQUETA PDF</button>
 </div>
 
 <div id="etiqueta-real">
-    <!-- Estos bloques "tapan" los datos viejos de la imagen y ponen los nuevos -->
-    <div id="pos-barcode-main"><svg id="barcode1"></svg></div>
+    <!-- El SVG y los DIV ahora tienen fondo blanco para limpiar la imagen base -->
+    <div id="pos-barcode-main" class="dato"><svg id="barcode1"></svg></div>
     <div id="pos-val-barcode-main" class="dato"></div>
 
-    <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato"></span></div>
+    <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato" style="margin-left:10px"></span></div>
 
-    <div id="pos-barcode-lote"><svg id="barcode2"></svg></div>
+    <div id="pos-barcode-lote" class="dato"><svg id="barcode2"></svg></div>
     <div id="pos-val-lote" class="dato"></div>
 
     <div id="pos-vencimiento" class="dato"></div>
@@ -68,6 +77,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script>
+    // Inicializar fecha de hoy
     document.getElementById('fechaInput').valueAsDate = new Date();
 
     function actualizar() {
@@ -75,25 +85,50 @@
         const fechaVal = document.getElementById('fechaInput').value;
         const dateParts = fechaVal.split('-');
         
+        // Fecha de elaboración para el cálculo
         const elab = new Date(fechaVal + 'T00:00:00');
+        // Cálculo de Vencimiento (+30 días)
         const venc = new Date(elab);
         venc.setDate(elab.getDate() + 30);
-        const vencStr = `${venc.getDate().toString().padStart(2,'0')}/${(venc.getMonth()+1).toString().padStart(2,'0')}/${venc.getFullYear()}`;
+        
+        const dV = venc.getDate().toString().padStart(2,'0');
+        const mV = (venc.getMonth()+1).toString().padStart(2,'0');
+        const aV = venc.getFullYear();
+        const vencStr = `${dV}/${mV}/${aV}`;
 
+        // Lógica de Códigos según tu imagen original
         const codBarra = (prod === '1 KG') ? '606110385695' : '606110385701';
         const codLoteSuffix = (prod === '1 KG') ? '1221' : '1220';
+        // Lote formato: DD MMAA + Suffix
         const lote = `${dateParts[2]}${dateParts[1]}${dateParts[0].substring(2)}${codLoteSuffix}`;
 
+        // Inyectar Datos en la etiqueta
         document.getElementById('txt-formato').innerText = prod + ".";
         document.getElementById('pos-val-barcode-main').innerText = codBarra;
         document.getElementById('pos-val-lote').innerText = lote;
         document.getElementById('pos-vencimiento').innerText = vencStr;
 
-        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 4.2, height: 135, margin: 0 });
-        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 3.2, height: 65, margin: 0 });
+        // Generar Códigos de Barras nítidos
+        JsBarcode("#barcode1", codBarra, {
+            format: "CODE128",
+            displayValue: false,
+            width: 3.8,
+            height: 140,
+            margin: 0
+        });
+
+        JsBarcode("#barcode2", lote, {
+            format: "CODE128",
+            displayValue: false,
+            width: 2.8,
+            height: 70,
+            margin: 0
+        });
     }
 
+    // Correr al cargar la página
     actualizar();
 </script>
+
 </body>
 </html>
