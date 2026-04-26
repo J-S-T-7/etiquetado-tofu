@@ -6,50 +6,52 @@
     <title>Generador de Etiquetas Vegusta</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
-        /* Estilos de la interfaz de usuario */
         body { font-family: 'Arial', sans-serif; background-color: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px; color: white; }
-        .panel { background: white; color: black; padding: 20px; border-radius: 8px; width: 350px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .panel { background: white; color: black; padding: 20px; border-radius: 8px; width: 350px; text-align: center; margin-bottom: 30px; }
         select, input, button { width: 100%; margin: 8px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; }
         button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; }
         .btn-print { background-color: #2980b9; }
 
-        /* Diseño exacto de la etiqueta (Compacto) */
+        /* CONTENEDOR DE LA ETIQUETA ÚNICA */
         #etiqueta { 
             background: white; 
             color: black; 
-            width: 400px; 
+            width: 320px; /* Tamaño más compacto */
             padding: 15px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            border: 1px solid #eee;
+            border: 1px solid #ddd;
         }
-        .logo { width: 180px; margin-bottom: 5px; }
-        .titulo { font-size: 18px; font-weight: 900; margin: 0; letter-spacing: -0.5px; }
-        .barcode-principal { margin: 5px 0; }
-        .formato-texto { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+
+        .logo { width: 140px; margin-bottom: 2px; }
+        .titulo { font-size: 16px; font-weight: 900; margin: 0; text-align: center; }
+        .barcode-principal { margin: 2px 0; }
+        .formato-texto { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
         
         .footer-info { 
             display: flex; 
             justify-content: space-between; 
             width: 100%; 
             align-items: flex-end;
-            margin-top: 5px;
+            margin-top: 0px;
         }
-        .barcode-secundario { margin-left: -10px; }
+        
+        /* Ajuste del código de barras inferior */
+        .barcode-secundario { width: 140px; height: auto; }
+        
         .datos-derecha { 
             text-align: right; 
-            font-size: 11px; 
+            font-size: 10px; 
             font-weight: bold; 
-            line-height: 1.2; 
-            margin-bottom: 5px;
+            line-height: 1.1;
         }
-        .fecha-negrita { font-size: 13px; display: block; margin-bottom: 2px; }
+        .fecha-negrita { font-size: 11px; display: block; margin-bottom: 1px; }
 
         @media print {
             body { background: none; padding: 0; }
             .panel { display: none; }
-            #etiqueta { border: none; margin: 0; }
+            #etiqueta { border: none; margin: 0; padding: 0; }
         }
     </style>
 </head>
@@ -66,8 +68,8 @@
         <button class="btn-print" onclick="window.print()">IMPRIMIR ETIQUETA</button>
     </div>
 
+    <!-- AQUÍ SOLO HAY UNA ETIQUETA AHORA -->
     <div id="etiqueta">
-        <!-- Referencia al archivo local subido image_39695b.png -->
         <img src="image_39695b.png" class="logo" alt="Logo Vegusta">
         
         <div class="titulo">TOFU FIRME VEGUSTA</div>
@@ -80,18 +82,16 @@
             <svg id="barcode2" class="barcode-secundario"></svg>
             
             <div class="datos-derecha">
-                <span id="display-fecha" class="fecha-negrita">26/04/2026</span>
+                <span id="display-fecha" class="fecha-negrita"></span>
                 VIDA UTIL<br>
                 30 DÍAS<br><br>
-                REFRIGERAR<br>
-                ENTRE<br>
+                REFRIGERAR ENTRE<br>
                 1 a 4 C°
             </div>
         </div>
     </div>
 
     <script>
-        // Establecer fecha de hoy por defecto
         document.getElementById('fecha').valueAsDate = new Date();
 
         function generar() {
@@ -101,39 +101,37 @@
             const textoFormato = item.value;
             const fechaVal = document.getElementById('fecha').value;
 
-            // Formatear Fecha
+            // Fecha
             if(fechaVal) {
                 const [y, m, d] = fechaVal.split('-');
                 document.getElementById('display-fecha').innerText = `${d}/${m}/${y}`;
             }
 
-            // Actualizar Texto Formato
             document.getElementById('txt-formato').innerText = textoFormato;
 
-            // Generar Código Barras Grande
+            // Código Barras Principal (El de arriba)
             JsBarcode("#barcode1", barcodePrincipal, {
                 format: "CODE128",
-                width: 2.5,
-                height: 70,
+                width: 2,
+                height: 50,
                 displayValue: true,
-                fontSize: 20,
+                fontSize: 18,
                 fontOptions: "bold",
-                margin: 0
+                margin: 5
             });
 
-            // Generar Código Barras Pequeño (Fijo según imagen)
+            // Código Barras Secundario (El de abajo a la izquierda)
             JsBarcode("#barcode2", "1304261221", {
                 format: "CODE128",
                 width: 1.2,
-                height: 40,
+                height: 35,
                 displayValue: true,
-                fontSize: 14,
+                fontSize: 12,
                 fontOptions: "bold",
                 margin: 0
             });
         }
 
-        // Ejecutar al cargar para mostrar etiqueta inicial
         window.onload = generar;
     </script>
 </body>
