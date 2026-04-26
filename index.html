@@ -7,41 +7,42 @@
         body { font-family: Arial, sans-serif; background: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
         .no-print { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; }
         
-        /* EL CONTENEDOR DEBE TENER LA PROPORCIÓN DE LA IMAGEN */
         #etiqueta-real {
             width: 1000px; 
             height: 600px;
             position: relative;
-            /* Usamos una ruta absoluta para evitar errores de carga */
             background-image: url('image_39695b.png'); 
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-color: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* BLOQUES BLANCOS PARA TAPAR LA IMAGEN BASE Y ESCRIBIR ENCIMA */
         .dato { 
             position: absolute; 
             font-weight: bold; 
             color: black; 
-            background: white; /* Esto "borra" lo que hay debajo en la imagen */
+            background: white; 
             display: flex; 
             align-items: center; 
             justify-content: center;
             overflow: hidden;
         }
         
-        /* Ajustes de posición milimétricos */
-        #pos-barcode-main { top: 165px; left: 242px; width: 515px; height: 165px; }
-        #pos-val-barcode-main { top: 335px; left: 350px; width: 300px; font-size: 52px; letter-spacing: 4px; height: 65px; }
+        /* AJUSTES DE POSICIÓN BASADOS EN IMAGE_38F823.PNG */
         
-        #pos-formato { top: 405px; left: 250px; width: 500px; font-size: 46px; font-weight: 900; height: 55px; }
+        /* Código de barras principal - Movido más a la derecha y abajo */
+        #pos-barcode-main { top: 185px; left: 260px; width: 480px; height: 150px; }
+        #pos-val-barcode-main { top: 345px; left: 350px; width: 300px; font-size: 50px; letter-spacing: 5px; height: 60px; }
         
-        #pos-barcode-lote { top: 465px; left: 58px; width: 355px; height: 75px; }
-        #pos-val-lote { top: 535px; left: 130px; width: 220px; font-size: 34px; height: 40px; }
+        /* Texto del producto - Ajustado al centro */
+        #pos-formato { top: 412px; left: 250px; width: 500px; font-size: 44px; font-weight: 900; height: 50px; }
         
-        #pos-vencimiento { top: 480px; right: 90px; width: 230px; font-size: 34px; font-weight: 900; height: 45px; }
+        /* Código de barras Lote - Movido más a la derecha */
+        #pos-barcode-lote { top: 475px; left: 80px; width: 330px; height: 70px; }
+        #pos-val-lote { top: 542px; left: 130px; width: 230px; font-size: 32px; height: 40px; }
+        
+        /* Vencimiento - Ajustado a la derecha */
+        #pos-vencimiento { top: 485px; right: 85px; width: 230px; font-size: 34px; font-weight: 900; height: 45px; }
 
         @media print {
             .no-print { display: none; }
@@ -98,8 +99,9 @@
         document.getElementById('pos-val-lote').innerText = lote;
         document.getElementById('pos-vencimiento').innerText = vencStr;
 
-        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.9, height: 145, margin: 0 });
-        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.9, height: 70, margin: 0 });
+        // Ajustamos el ancho (width) de las barras para que no se salgan del cuadro blanco
+        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.5, height: 130, margin: 0 });
+        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.6, height: 60, margin: 0 });
     }
     actualizar();
 </script>
