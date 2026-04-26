@@ -21,28 +21,32 @@
             position: absolute; 
             font-weight: bold; 
             color: black; 
-            background: white; 
+            background: white; /* El parche blanco */
             display: flex; 
             align-items: center; 
             justify-content: center;
             text-align: center;
         }
         
-        /* Ajustes para tapar el fondo y centrar los nuevos datos */
+        /* AJUSTES FINALES PARA BORRAR EL FONDO VIEJO */
         
-        /* Tapamos "TOFU FIRME VEGUSTA" y el código viejo */
-        #pos-barcode-main { top: 175px; left: 240px; width: 520px; height: 160px; }
-        #pos-val-barcode-main { top: 335px; left: 340px; width: 320px; font-size: 52px; letter-spacing: 5px; height: 65px; }
+        /* Este bloque ahora es más alto para borrar "TOFU FIRME VEGUSTA" por completo */
+        #pos-barcode-main { top: 160px; left: 230px; width: 540px; height: 175px; }
         
-        /* Tapamos la línea de 6 PACK */
-        #pos-formato { top: 405px; left: 200px; width: 600px; font-size: 48px; font-weight: 900; height: 60px; }
+        /* Parche para el número del código de barras principal */
+        #pos-val-barcode-main { top: 335px; left: 330px; width: 340px; font-size: 52px; letter-spacing: 5px; height: 70px; }
         
-        /* Tapamos el lote viejo */
-        #pos-barcode-lote { top: 465px; left: 60px; width: 380px; height: 80px; }
-        #pos-val-lote { top: 540px; left: 130px; width: 240px; font-size: 34px; height: 45px; }
+        /* Parche ancho para la línea de producto */
+        #pos-formato { top: 400px; left: 150px; width: 700px; font-size: 50px; font-weight: 900; height: 65px; }
         
-        /* Tapamos la fecha vieja */
-        #pos-vencimiento { top: 475px; right: 80px; width: 250px; font-size: 36px; font-weight: 900; height: 55px; }
+        /* Parche para el código de barras de lote */
+        #pos-barcode-lote { top: 465px; left: 50px; width: 400px; height: 80px; }
+        
+        /* Parche para el número de lote */
+        #pos-val-lote { top: 540px; left: 110px; width: 280px; font-size: 34px; height: 45px; }
+        
+        /* Parche para la fecha de vencimiento y textos cercanos */
+        #pos-vencimiento { top: 465px; right: 60px; width: 300px; font-size: 38px; font-weight: 900; height: 70px; }
 
         @media print {
             .no-print { display: none; }
@@ -67,7 +71,7 @@
 </div>
 
 <div id="etiqueta-real">
-    <!-- Bloques con fondo blanco para "borrar" lo que hay detrás -->
+    <!-- Capas de "borrado" y escritura -->
     <div id="pos-barcode-main" class="dato"><svg id="barcode1"></svg></div>
     <div id="pos-val-barcode-main" class="dato"></div>
     <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato" style="margin-left:15px"></span></div>
@@ -100,8 +104,9 @@
         document.getElementById('pos-val-lote').innerText = lote;
         document.getElementById('pos-vencimiento').innerText = vencStr;
 
-        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.5, height: 135, margin: 0 });
-        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.7, height: 65, margin: 0 });
+        // Barras un poco más gruesas para que se vean mejor
+        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.6, height: 145, margin: 0 });
+        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.8, height: 70, margin: 0 });
     }
     actualizar();
 </script>
