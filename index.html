@@ -6,29 +6,44 @@
     <title>Generador Vegusta Oficial</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
+        /* Interfaz del Panel */
         body { font-family: 'Arial', sans-serif; background-color: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px; color: white; margin: 0; }
         .panel { background: white; color: black; padding: 20px; border-radius: 8px; width: 350px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         select, input, button { width: 100%; margin: 8px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box; }
         button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; }
         .btn-print { background-color: #2980b9; }
 
-        #zona-impresion { background: white; padding: 10px; display: inline-block; }
-        #etiqueta-unica { background: white; color: black; width: 450px; display: flex; flex-direction: column; align-items: center; padding: 20px; border: 1px solid #eee; }
-
-        .logo { width: 220px; height: auto; margin-bottom: 10px; display: block; }
-        .titulo { font-size: 24px; font-weight: 900; margin: 0; text-transform: uppercase; text-align: center; }
-        .barcode-main { margin: 10px 0; }
-        .formato-txt { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        /* AJUSTE SEGÚN ZDESIGNER: 10.4cm x 6cm */
+        #zona-impresion { background: white; padding: 0; display: inline-block; }
         
-        .fila-footer { display: flex; justify-content: space-between; width: 100%; align-items: flex-end; margin-top: 10px; }
-        .datos-info { text-align: right; font-size: 12px; font-weight: bold; line-height: 1.3; }
-        .fecha-bold { font-size: 14px; display: block; margin-bottom: 3px; }
+        #etiqueta-unica { 
+            background: white; 
+            color: black; 
+            width: 10.4cm; 
+            height: 6cm; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 0.2cm; /* Margen interno mínimo */
+            box-sizing: border-box;
+            overflow: hidden;
+            border: 1px solid #eee; /* Guía visual en pantalla */
+        }
+
+        .logo { width: 160px; height: auto; margin-bottom: 2px; display: block; }
+        .titulo { font-size: 18px; font-weight: 900; margin: 0; text-transform: uppercase; text-align: center; line-height: 1; }
+        .barcode-main { margin: 2px 0; }
+        .formato-txt { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        
+        .fila-footer { display: flex; justify-content: space-between; width: 95%; align-items: flex-end; margin-top: auto; padding-bottom: 5px; }
+        .datos-info { text-align: right; font-size: 9px; font-weight: bold; line-height: 1.1; }
+        .fecha-bold { font-size: 11px; display: block; margin-bottom: 2px; }
 
         @media print {
+            @page { size: 10.4cm 6cm; margin: 0; }
             body { background: none; padding: 0; }
             .panel { display: none; }
-            #zona-impresion { padding: 0; }
-            #etiqueta-unica { border: none; margin: 0; width: 100%; }
+            #etiqueta-unica { border: none; margin: 0; }
         }
     </style>
 </head>
@@ -38,7 +53,7 @@
         <h2 style="margin-top:0">Panel Vegusta</h2>
         <select id="producto">
             <option value="6 PACK DE 1 KG." data-barcode="606110385695">TOFU 1 KG (6 PACK)</option>
-            <option value="6 PACK DE 500 GR." data-barcode="606110385701">TOFU 500 GR</option>
+            <option value="FORMATO 500 GR." data-barcode="606110385701">TOFU 500 GR</option>
         </select>
         <input type="date" id="fecha-input">
         <button onclick="generar()">GENERAR ETIQUETA</button>
@@ -65,7 +80,6 @@
     </div>
 
     <script>
-        // Establecer fecha de hoy al cargar
         document.getElementById('fecha-input').valueAsDate = new Date();
 
         function generar() {
@@ -75,7 +89,6 @@
             const fechaInput = document.getElementById('fecha-input').value;
 
             if (fechaInput) {
-                // 1. Lógica de Fecha de Vencimiento (+30 días)
                 const fechaLote = new Date(fechaInput + 'T00:00:00');
                 const fechaVenc = new Date(fechaLote);
                 fechaVenc.setDate(fechaLote.getDate() + 30);
@@ -85,19 +98,17 @@
                 const aaV = fechaVenc.getFullYear();
                 document.getElementById('txt-vencimiento').innerText = `${ddV}/${mmV}/${aaV}`;
 
-                // 2. Lógica de Número de Lote Dinámico (DDMMAA + 1221)
                 const ddL = String(fechaLote.getDate()).padStart(2, '0');
                 const mmL = String(fechaLote.getMonth() + 1).padStart(2, '0');
                 const aaL = String(fechaLote.getFullYear()).substring(2);
                 const loteCompleto = `${ddL}${mmL}${aaL}1221`;
 
-                // Generar código de barras inferior con el nuevo lote
                 JsBarcode("#code-secundario", loteCompleto, {
                     format: "CODE128",
-                    width: 1.5,
-                    height: 45,
+                    width: 1.2,
+                    height: 30,
                     displayValue: true,
-                    fontSize: 13,
+                    fontSize: 10,
                     fontOptions: "bold",
                     margin: 0
                 });
@@ -105,18 +116,16 @@
 
             document.getElementById('txt-formato').innerText = selected.value;
 
-            // Código principal (EAN)
             JsBarcode("#code-principal", barcodeMain, {
                 format: "CODE128",
-                width: 2.8,
-                height: 85,
+                width: 2.2,
+                height: 60,
                 displayValue: true,
-                fontSize: 22,
+                fontSize: 18,
                 fontOptions: "bold",
                 margin: 0
             });
         }
-        
         window.onload = generar;
     </script>
 </body>
