@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Etiquetas Vegusta</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; padding: 20px; text-align: center; }
+        .config-panel { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto; }
+        .label-preview { 
+            background: white; width: 10cm; height: 15cm; border: 1px solid #000; margin: 20px auto; 
+            padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+        }
+        .logo { width: 80%; font-weight: bold; font-size: 24px; border: 2px solid #000; padding: 10px; margin-top: 10px; }
+        .info-section { width: 100%; text-align: left; font-size: 14px; line-height: 1.6; }
+        .barcode { font-family: 'Libre Barcode 39', cursive; font-size: 40px; margin: 10px 0; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            .label-preview, .label-preview * { visibility: visible; }
+            .label-preview { position: absolute; left: 0; top: 0; border: none; }
+            .no-print { display: none; }
+        }
+        
+        input, select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #ccc; }
+        button { background: #28a745; color: white; font-weight: bold; cursor: pointer; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="config-panel no-print">
+        <h2>Configuración de Etiqueta</h2>
+        <label>Producto:</label>
+        <select id="producto" onchange="updateLabel()">
+            <option value="1KG">TOFU FIRME 1 KG (6 PACK)</option>
+            <option value="500GR">TOFU FIRME 500 GR (6 PACK)</option>
+        </select>
+
+        <label>Fecha de Elaboración:</label>
+        <input type="date" id="fechaElab" onchange="updateLabel()">
+
+        <button onclick="window.print()">IMPRIMIR ETIQUETA</button>
+    </div>
+
+    <!-- Previsualización de la Etiqueta -->
+    <div class="label-preview" id="etiqueta">
+        <div class="logo">VEGAN PLANT BASED</div>
+        
+        <div class="info-section">
+            <h3 id="disp-nombre" style="text-align: center; margin: 5px 0;">TOFU FIRME VEGUSTA</h3>
+            <p><strong>FORMATO:</strong> <span id="disp-formato">6 PACK DE 1 KG</span></p>
+            <p><strong>LOTE:</strong> <span id="disp-lote">---</span></p>
+            <p><strong>ELABORACIÓN:</strong> <span id="disp-elab">---</span></p>
+            <p><strong>VENCIMIENTO:</strong> <span id="disp-venc">---</span></p>
+            <p><strong>ALMACENAMIENTO:</strong> REFRIGERAR ENTRE 1 A 4 °C</p>
+        </div>
+
+        <div style="text-align: center;">
+            <div style="font-size: 10px;">606110385695</div>
+            <div style="border-top: 2px solid black; width: 150px; height: 40px; margin-top: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold;">|||||||||||||||||||||||||||</div>
+        </div>
+    </div>
+
+    <script>
+        function updateLabel() {
+            const producto = document.getElementById('producto').value;
+            const fechaInput = document.getElementById('fechaElab').value;
+            
+            if (!fechaInput) return;
+
+            const fechaElab = new Date(fechaInput + 'T00:00:00');
+            const fechaVenc = new Date(fechaElab);
+            fechaVenc.setDate(fechaElab.getDate() + 30); // Lógica de 30 días
+
+            // Formatear Fechas DD/MM/AAAA
+            const fElabStr = fechaElab.toLocaleDateString('es-CL');
+            const fVencStr = fechaVenc.toLocaleDateString('es-CL');
+
+            // Generar Lote: DDMMAA + Código 1221
+            const loteDate = fechaInput.split('-').reverse().join('').substring(0, 6);
+            const loteFinal = loteDate + "1221";
+
+            // Actualizar Interfaz
+            document.getElementById('disp-formato').innerText = "6 PACK DE " + producto;
+            document.getElementById('disp-lote').innerText = loteFinal;
+            document.getElementById('disp-elab').innerText = fElabStr;
+            document.getElementById('disp-venc').innerText = fVencStr;
+        }
+
+        // Establecer fecha de hoy por defecto
+        document.getElementById('fechaElab').valueAsDate = new Date();
+        updateLabel();
+    </script>
+</body>
+</html>
