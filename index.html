@@ -30,29 +30,31 @@
             text-align: center;
         }
         
-        /* POSICIONAMIENTO INDEPENDIENTE PARA EVITAR SOLAPAMIENTOS */
+        /* BLOQUES DE POSICIONAMIENTO PRECISOS */
+        
+        /* Código de barras principal y su número */
         #pos-barcode-main { top: 155px; left: 180px; width: 640px; height: 185px; }
-        #pos-val-barcode-main { top: 335px; left: 220px; width: 560px; font-size: 52px; letter-spacing: 5px; height: 75px; }
+        #pos-val-barcode-main { top: 340px; left: 220px; width: 560px; font-size: 52px; letter-spacing: 5px; height: 60px; }
         
-        /* Tofu Formato (6 PACK DE...) */
-        #pos-formato { top: 400px; left: 80px; width: 840px; font-size: 52px; font-weight: 900; height: 75px; z-index: 10; }
+        /* Texto "6 PACK DE..." (Bajado para no chocar con el código principal) */
+        #pos-formato { top: 410px; left: 80px; width: 840px; font-size: 48px; font-weight: 900; height: 60px; }
         
-        /* Lote */
-        #pos-barcode-lote { top: 465px; left: 35px; width: 430px; height: 85px; }
-        #pos-val-lote { top: 540px; left: 60px; width: 360px; font-size: 34px; height: 50px; }
+        /* Lote (Código de barras inferior izquierdo y su número) */
+        #pos-barcode-lote { top: 480px; left: 35px; width: 430px; height: 85px; }
+        #pos-val-lote { top: 555px; left: 60px; width: 360px; font-size: 34px; height: 40px; }
         
-        /* FECHA DE VENCIMIENTO */
-        #pos-vencimiento { top: 465px; right: 35px; width: 320px; font-size: 40px; font-weight: 900; height: 50px; }
+        /* Fecha de vencimiento (Superior derecha del bloque inferior) */
+        #pos-vencimiento { top: 480px; right: 50px; width: 300px; font-size: 38px; font-weight: 900; height: 45px; }
         
-        /* INSTRUCCIONES DE REFRIGERACIÓN (Debajo de la fecha) */
-        #pos-refrig { 
-            top: 515px; 
-            right: 35px; 
-            width: 320px; 
-            height: 70px; 
+        /* Texto "REFRIGERAR ENTRE" (Posicionado justo debajo de la fecha) */
+        #pos-refrig-label { 
+            top: 525px; 
+            right: 50px; 
+            width: 300px; 
             font-size: 18px; 
             line-height: 1.1; 
-            background: white;
+            height: 65px;
+            flex-direction: column;
         }
 
         @media print {
@@ -84,10 +86,12 @@
     <div id="pos-barcode-lote" class="dato"><svg id="barcode2"></svg></div>
     <div id="pos-val-lote" class="dato"></div>
     
-    <!-- Elementos de fecha y refrigeración por separado -->
+    <!-- Fecha y Refrigeración separadas para control total -->
     <div id="pos-vencimiento" class="dato"></div>
-    <div id="pos-refrig" class="dato">
-        REFRIGERAR<br>ENTRE<br>1 a 4 C°
+    <div id="pos-refrig-label" class="dato">
+        <span>REFRIGERAR</span>
+        <span>ENTRE</span>
+        <span>1 a 4 C°</span>
     </div>
 </div>
 
@@ -100,6 +104,7 @@
         const fechaVal = document.getElementById('fechaInput').value;
         const parts = fechaVal.split('-');
         
+        // Calcular vencimiento (30 días)
         const elab = new Date(fechaVal + 'T00:00:00');
         const venc = new Date(elab);
         venc.setDate(elab.getDate() + 30);
@@ -110,6 +115,8 @@
 
         const codBarra = (prod === '1 KG') ? '606110385695' : '606110385701';
         const suffix = (prod === '1 KG') ? '1221' : '1220';
+        
+        // Lote basado en fecha de elaboración
         const lote = `${parts[2]}${parts[1]}${parts[0].substring(2)}${suffix}`;
 
         document.getElementById('txt-formato').innerText = prod + ".";
@@ -117,6 +124,7 @@
         document.getElementById('pos-val-lote').innerText = lote;
         document.getElementById('pos-vencimiento').innerText = vencStr;
 
+        // Generar códigos de barras
         JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.7, height: 150, margin: 0 });
         JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.8, height: 75, margin: 0 });
     }
