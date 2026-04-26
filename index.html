@@ -15,38 +15,40 @@
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-color: white;
+            -webkit-print-color-adjust: exact; /* Fuerza a algunos navegadores a mostrar el fondo */
+            print-color-adjust: exact;
         }
 
         .dato { 
             position: absolute; 
             font-weight: bold; 
             color: black; 
-            background: white; /* El parche blanco */
+            background: white; 
             display: flex; 
             align-items: center; 
             justify-content: center;
             text-align: center;
         }
         
-        /* AJUSTES FINALES PARA BORRAR EL FONDO VIEJO */
+        /* BLOQUES DE LIMPIEZA TOTAL */
         
-        /* Este bloque ahora es más alto para borrar "TOFU FIRME VEGUSTA" por completo */
-        #pos-barcode-main { top: 160px; left: 230px; width: 540px; height: 175px; }
+        /* Tapa "TOFU FIRME VEGUSTA" y el código de barras grande */
+        #pos-barcode-main { top: 155px; left: 220px; width: 560px; height: 185px; }
         
-        /* Parche para el número del código de barras principal */
-        #pos-val-barcode-main { top: 335px; left: 330px; width: 340px; font-size: 52px; letter-spacing: 5px; height: 70px; }
+        /* Tapa el número del código principal */
+        #pos-val-barcode-main { top: 335px; left: 320px; width: 360px; font-size: 52px; letter-spacing: 5px; height: 75px; }
         
-        /* Parche ancho para la línea de producto */
-        #pos-formato { top: 400px; left: 150px; width: 700px; font-size: 50px; font-weight: 900; height: 65px; }
+        /* Tapa la línea de producto completa */
+        #pos-formato { top: 400px; left: 120px; width: 760px; font-size: 50px; font-weight: 900; height: 70px; }
         
-        /* Parche para el código de barras de lote */
-        #pos-barcode-lote { top: 465px; left: 50px; width: 400px; height: 80px; }
+        /* Tapa el código de barras del lote */
+        #pos-barcode-lote { top: 465px; left: 40px; width: 420px; height: 85px; }
         
-        /* Parche para el número de lote */
-        #pos-val-lote { top: 540px; left: 110px; width: 280px; font-size: 34px; height: 45px; }
+        /* Tapa el número de lote */
+        #pos-val-lote { top: 540px; left: 100px; width: 300px; font-size: 34px; height: 50px; }
         
-        /* Parche para la fecha de vencimiento y textos cercanos */
-        #pos-vencimiento { top: 465px; right: 60px; width: 300px; font-size: 38px; font-weight: 900; height: 70px; }
+        /* Tapa la fecha de vencimiento y textos de refrigeración */
+        #pos-vencimiento { top: 465px; right: 50px; width: 320px; font-size: 38px; font-weight: 900; height: 75px; }
 
         @media print {
             .no-print { display: none; }
@@ -61,17 +63,17 @@
 <body>
 
 <div class="no-print">
-    <h2 style="margin:0 0 15px 0;">Panel de Etiquetas</h2>
+    <h2 style="margin:0 0 10px 0;">Panel Vegusta</h2>
     <select id="producto" onchange="actualizar()">
         <option value="500 GR">TOFU 500 GR</option>
         <option value="1 KG">TOFU 1 KG</option>
     </select>
     <input type="date" id="fechaInput" onchange="actualizar()">
-    <button onclick="window.print()">IMPRIMIR EN PDF</button>
+    <button onclick="window.print()">IMPRIMIR ETIQUETA</button>
+    <p style="font-size: 11px; color: #666; margin-top: 10px;">Nota: En la ventana de impresión, activa "Gráficos de fondo".</p>
 </div>
 
 <div id="etiqueta-real">
-    <!-- Capas de "borrado" y escritura -->
     <div id="pos-barcode-main" class="dato"><svg id="barcode1"></svg></div>
     <div id="pos-val-barcode-main" class="dato"></div>
     <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato" style="margin-left:15px"></span></div>
@@ -93,7 +95,9 @@
         const venc = new Date(elab);
         venc.setDate(elab.getDate() + 30);
         
-        const vencStr = `${venc.getDate().toString().padStart(2,'0')}/${(venc.getMonth()+1).toString().padStart(2,'0')}/${venc.getFullYear()}`;
+        const dV = venc.getDate().toString().padStart(2,'0');
+        const mV = (venc.getMonth()+1).toString().padStart(2,'0');
+        const vencStr = `${dV}/${mV}/${venc.getFullYear()}`;
 
         const codBarra = (prod === '1 KG') ? '606110385695' : '606110385701';
         const suffix = (prod === '1 KG') ? '1221' : '1220';
@@ -104,9 +108,8 @@
         document.getElementById('pos-val-lote').innerText = lote;
         document.getElementById('pos-vencimiento').innerText = vencStr;
 
-        // Barras un poco más gruesas para que se vean mejor
-        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.6, height: 145, margin: 0 });
-        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.8, height: 70, margin: 0 });
+        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.7, height: 150, margin: 0 });
+        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.8, height: 75, margin: 0 });
     }
     actualizar();
 </script>
