@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador Vegusta Oficial</title>
+    <!-- Favicon para que el logo aparezca en la pestaña -->
+    <link rel="icon" type="image/png" href="LOGO.png">
+    
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
         /* Interfaz del Panel */
@@ -13,7 +16,7 @@
         button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; }
         .btn-print { background-color: #2980b9; }
 
-        /* AJUSTE SEGÚN ZDESIGNER: 10.4cm x 6cm */
+        /* Ajuste Zebra ZM400: 10.4cm x 6cm */
         #zona-impresion { background: white; padding: 0; display: inline-block; }
         
         #etiqueta-unica { 
@@ -24,10 +27,10 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            padding: 0.2cm; /* Margen interno mínimo */
+            padding: 0.2cm; 
             box-sizing: border-box;
             overflow: hidden;
-            border: 1px solid #eee; /* Guía visual en pantalla */
+            border: 1px solid #eee; 
         }
 
         .logo { width: 160px; height: auto; margin-bottom: 2px; display: block; }
@@ -52,8 +55,8 @@
     <div class="panel">
         <h2 style="margin-top:0">Panel Vegusta</h2>
         <select id="producto">
-            <option value="6 PACK DE 1 KG." data-barcode="606110385695">TOFU 1 KG</option>
-            <option value="6 PACK DE 500 GR." data-barcode="606110385701">TOFU 500 GR</option>
+            <option value="6 PACK DE 1 KG." data-barcode="606110385695">TOFU 1 KG (6 PACK)</option>
+            <option value="FORMATO 500 GR." data-barcode="606110385701">TOFU 500 GR</option>
         </select>
         <input type="date" id="fecha-input">
         <button onclick="generar()">GENERAR ETIQUETA</button>
@@ -89,6 +92,7 @@
             const fechaInput = document.getElementById('fecha-input').value;
 
             if (fechaInput) {
+                // Cálculo de Vencimiento (+30 días)
                 const fechaLote = new Date(fechaInput + 'T00:00:00');
                 const fechaVenc = new Date(fechaLote);
                 fechaVenc.setDate(fechaLote.getDate() + 30);
@@ -98,6 +102,7 @@
                 const aaV = fechaVenc.getFullYear();
                 document.getElementById('txt-vencimiento').innerText = `${ddV}/${mmV}/${aaV}`;
 
+                // Generación de Lote Dinámico (DDMMAA1221)
                 const ddL = String(fechaLote.getDate()).padStart(2, '0');
                 const mmL = String(fechaLote.getMonth() + 1).padStart(2, '0');
                 const aaL = String(fechaLote.getFullYear()).substring(2);
