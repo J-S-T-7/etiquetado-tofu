@@ -15,7 +15,7 @@
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-color: white;
-            -webkit-print-color-adjust: exact; /* Fuerza a algunos navegadores a mostrar el fondo */
+            -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
@@ -30,25 +30,25 @@
             text-align: center;
         }
         
-        /* BLOQUES DE LIMPIEZA TOTAL */
+        /* PARCHES DE LIMPIEZA AMPLIADOS */
         
-        /* Tapa "TOFU FIRME VEGUSTA" y el código de barras grande */
-        #pos-barcode-main { top: 155px; left: 220px; width: 560px; height: 185px; }
+        /* Cubre el código de barras principal y cualquier rastro lateral */
+        #pos-barcode-main { top: 155px; left: 210px; width: 580px; height: 185px; }
         
-        /* Tapa el número del código principal */
-        #pos-val-barcode-main { top: 335px; left: 320px; width: 360px; font-size: 52px; letter-spacing: 5px; height: 75px; }
+        /* Cubre el número del código y las comillas de la imagen base */
+        #pos-val-barcode-main { top: 335px; left: 280px; width: 440px; font-size: 52px; letter-spacing: 5px; height: 75px; }
         
-        /* Tapa la línea de producto completa */
-        #pos-formato { top: 400px; left: 120px; width: 760px; font-size: 50px; font-weight: 900; height: 70px; }
+        /* Cubre la línea de descripción del producto */
+        #pos-formato { top: 400px; left: 100px; width: 800px; font-size: 52px; font-weight: 900; height: 75px; }
         
-        /* Tapa el código de barras del lote */
-        #pos-barcode-lote { top: 465px; left: 40px; width: 420px; height: 85px; }
+        /* Cubre el código de barras de lote lateral */
+        #pos-barcode-lote { top: 465px; left: 30px; width: 440px; height: 85px; }
         
-        /* Tapa el número de lote */
-        #pos-val-lote { top: 540px; left: 100px; width: 300px; font-size: 34px; height: 50px; }
+        /* Cubre el número de lote */
+        #pos-val-lote { top: 540px; left: 90px; width: 320px; font-size: 34px; height: 50px; }
         
-        /* Tapa la fecha de vencimiento y textos de refrigeración */
-        #pos-vencimiento { top: 465px; right: 50px; width: 320px; font-size: 38px; font-weight: 900; height: 75px; }
+        /* Cubre la fecha y los textos de refrigeración antiguos */
+        #pos-vencimiento { top: 465px; right: 40px; width: 340px; font-size: 40px; font-weight: 900; height: 80px; }
 
         @media print {
             .no-print { display: none; }
@@ -70,7 +70,6 @@
     </select>
     <input type="date" id="fechaInput" onchange="actualizar()">
     <button onclick="window.print()">IMPRIMIR ETIQUETA</button>
-    <p style="font-size: 11px; color: #666; margin-top: 10px;">Nota: En la ventana de impresión, activa "Gráficos de fondo".</p>
 </div>
 
 <div id="etiqueta-real">
