@@ -25,30 +25,28 @@
             color: black; 
             background: white; 
             display: flex; 
+            flex-direction: column; /* Alineación vertical para la fecha y refrigeración */
             align-items: center; 
             justify-content: center;
             text-align: center;
         }
         
-        /* AJUSTES FINALES DE MARGENES */
-        
-        /* Código de barras principal */
+        /* BLOQUES DE POSICIONAMIENTO */
         #pos-barcode-main { top: 155px; left: 180px; width: 640px; height: 185px; }
-        
-        /* Número del código principal */
         #pos-val-barcode-main { top: 335px; left: 220px; width: 560px; font-size: 52px; letter-spacing: 5px; height: 75px; }
-        
-        /* Línea de producto */
         #pos-formato { top: 400px; left: 80px; width: 840px; font-size: 52px; font-weight: 900; height: 75px; }
-        
-        /* Código de lote (un poco más a la derecha para seguridad) */
         #pos-barcode-lote { top: 465px; left: 35px; width: 430px; height: 85px; }
-        
-        /* Número de lote */
         #pos-val-lote { top: 540px; left: 60px; width: 360px; font-size: 34px; height: 50px; }
         
-        /* Fecha de vencimiento (más margen derecho para evitar recorte) */
-        #pos-vencimiento { top: 465px; right: 35px; width: 320px; font-size: 40px; font-weight: 900; height: 80px; justify-content: center; }
+        /* Bloque de Fecha y Refrigeración Ajustado */
+        #pos-vencimiento-wrapper { 
+            top: 465px; 
+            right: 35px; 
+            width: 320px; 
+            height: 110px; /* Un poco más alto para el texto extra */
+        }
+        .txt-venc { font-size: 40px; margin-bottom: 2px; }
+        .txt-refrig { font-size: 18px; line-height: 1.2; text-transform: uppercase; }
 
         @media print {
             .no-print { display: none; }
@@ -78,7 +76,14 @@
     <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato" style="margin-left:15px"></span></div>
     <div id="pos-barcode-lote" class="dato"><svg id="barcode2"></svg></div>
     <div id="pos-val-lote" class="dato"></div>
-    <div id="pos-vencimiento" class="dato"></div>
+    
+    <!-- Bloque combinado de Vencimiento y Refrigeración -->
+    <div id="pos-vencimiento-wrapper" class="dato">
+        <div id="fecha-venc" class="txt-venc"></div>
+        <div class="txt-refrig">
+            REFRIGERAR<br>ENTRE<br>1 a 4 C°
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -105,7 +110,7 @@
         document.getElementById('txt-formato').innerText = prod + ".";
         document.getElementById('pos-val-barcode-main').innerText = codBarra;
         document.getElementById('pos-val-lote').innerText = lote;
-        document.getElementById('pos-vencimiento').innerText = vencStr;
+        document.getElementById('fecha-venc').innerText = vencStr;
 
         JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.7, height: 150, margin: 0 });
         JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.8, height: 75, margin: 0 });
