@@ -13,24 +13,24 @@
         .btn-print { background-color: #2980b9; }
 
         #zona-impresion { background: white; padding: 10px; display: inline-block; }
-        #etiqueta-unica { background: white; color: black; width: 380px; display: flex; flex-direction: column; align-items: center; padding: 15px; border: 1px solid #f0f0f0; }
+        
+        /* Aumentamos un poco el ancho para que se vea mejor al imprimir */
+        #etiqueta-unica { background: white; color: black; width: 450px; display: flex; flex-direction: column; align-items: center; padding: 20px; border: 1px solid #eee; }
 
-        /* CORRECCIÓN: Tamaño del logo */
-        .logo { width: 180px; height: auto; margin-bottom: 8px; display: block; }
+        .logo { width: 220px; height: auto; margin-bottom: 10px; display: block; }
+        .titulo { font-size: 24px; font-weight: 900; margin: 0; text-transform: uppercase; text-align: center; }
+        .barcode-main { margin: 10px 0; }
+        .formato-txt { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
         
-        .titulo { font-size: 20px; font-weight: 900; margin: 0; text-transform: uppercase; text-align: center; }
-        .barcode-main { margin: 8px 0; }
-        .formato-txt { font-size: 16px; font-weight: bold; margin-bottom: 12px; }
-        
-        .fila-footer { display: flex; justify-content: space-between; width: 100%; align-items: flex-end; margin-top: 5px; }
-        .datos-info { text-align: right; font-size: 11px; font-weight: bold; line-height: 1.2; }
-        .fecha-bold { font-size: 13px; display: block; margin-bottom: 2px; }
+        .fila-footer { display: flex; justify-content: space-between; width: 100%; align-items: flex-end; margin-top: 10px; }
+        .datos-info { text-align: right; font-size: 12px; font-weight: bold; line-height: 1.3; }
+        .fecha-bold { font-size: 14px; display: block; margin-bottom: 3px; }
 
         @media print {
             body { background: none; padding: 0; }
             .panel { display: none; }
             #zona-impresion { padding: 0; }
-            #etiqueta-unica { border: none; margin: 0; }
+            #etiqueta-unica { border: none; margin: 0; width: 100%; } /* Ocupa el ancho del papel térmico */
         }
     </style>
 </head>
@@ -49,18 +49,13 @@
 
     <div id="zona-impresion">
         <div id="etiqueta-unica">
-            <!-- CORRECCIÓN: Nombre exacto del archivo en tu GitHub -->
             <img src="LOGO.png" class="logo" alt="Vegusta">
-            
             <div class="titulo">TOFU FIRME VEGUSTA</div>
-            
             <svg id="code-principal" class="barcode-main"></svg>
-            
             <div id="txt-formato" class="formato-txt"></div>
 
             <div class="fila-footer">
                 <svg id="code-secundario"></svg>
-                
                 <div class="datos-info">
                     <span id="txt-fecha" class="fecha-bold"></span>
                     VIDA UTIL 30 DÍAS<br><br>
@@ -87,22 +82,24 @@
 
             document.getElementById('txt-formato').innerText = selected.value;
 
+            // Código principal con más altura
             JsBarcode("#code-principal", barcodeMain, {
                 format: "CODE128",
-                width: 2.5,
-                height: 70,
+                width: 2.8,
+                height: 85,
                 displayValue: true,
-                fontSize: 20,
+                fontSize: 22,
                 fontOptions: "bold",
                 margin: 0
             });
 
+            // Código secundario más legible
             JsBarcode("#code-secundario", "1304261221", {
                 format: "CODE128",
-                width: 1.3,
-                height: 40,
+                width: 1.5,
+                height: 45,
                 displayValue: true,
-                fontSize: 12,
+                fontSize: 13,
                 fontOptions: "bold",
                 margin: 0
             });
