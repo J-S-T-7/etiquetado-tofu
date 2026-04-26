@@ -3,135 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Etiquetas Vegusta</title>
+    <title>Generador Vegusta</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
+        /* Fondo y panel */
         body { font-family: 'Arial', sans-serif; background-color: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px; color: white; }
-        .panel { background: white; color: black; padding: 20px; border-radius: 8px; width: 350px; text-align: center; margin-bottom: 30px; }
-        select, input, button { width: 100%; margin: 8px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; }
+        .panel { background: white; color: black; padding: 20px; border-radius: 8px; width: 350px; text-align: center; margin-bottom: 20px; }
+        select, input, button { width: 100%; margin: 8px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; }
         button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; }
         .btn-print { background-color: #2980b9; }
 
-        /* CONTENEDOR DE LA ETIQUETA ÚNICA */
-        #etiqueta { 
-            background: white; 
-            color: black; 
-            width: 320px; /* Tamaño más compacto */
-            padding: 15px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            border: 1px solid #ddd;
+        /* LA ETIQUETA ÚNICA (Limpiando el error de image_2d39b9.png) */
+        #contenedor-etiqueta {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
         }
 
-        .logo { width: 140px; margin-bottom: 2px; }
-        .titulo { font-size: 16px; font-weight: 900; margin: 0; text-align: center; }
-        .barcode-principal { margin: 2px 0; }
-        .formato-texto { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        #etiqueta-real { 
+            background: white; 
+            color: black; 
+            width: 380px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            padding: 10px;
+        }
+
+        .logo { width: 180px; margin-bottom: 5px; }
+        .titulo { font-size: 19px; font-weight: 900; margin: 0; text-transform: uppercase; }
+        .barcode-main { margin: 5px 0; }
+        .formato-txt { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
         
-        .footer-info { 
+        .fila-inferior { 
             display: flex; 
             justify-content: space-between; 
             width: 100%; 
             align-items: flex-end;
-            margin-top: 0px;
         }
-        
-        /* Ajuste del código de barras inferior */
-        .barcode-secundario { width: 140px; height: auto; }
         
         .datos-derecha { 
             text-align: right; 
-            font-size: 10px; 
+            font-size: 11px; 
             font-weight: bold; 
-            line-height: 1.1;
+            line-height: 1.2;
         }
-        .fecha-negrita { font-size: 11px; display: block; margin-bottom: 1px; }
 
         @media print {
             body { background: none; padding: 0; }
             .panel { display: none; }
-            #etiqueta { border: none; margin: 0; padding: 0; }
+            #contenedor-etiqueta { padding: 0; }
+            #etiqueta-real { border: none; }
         }
     </style>
 </head>
 <body>
 
     <div class="panel">
-        <h2 style="margin-top:0">Panel Vegusta</h2>
+        <h2 style="margin:0 0 10px 0">Panel Vegusta</h2>
         <select id="producto">
             <option value="6 PACK DE 1 KG." data-barcode="606110385695">TOFU 1 KG (6 PACK)</option>
             <option value="FORMATO 500 GR." data-barcode="606110385701">TOFU 500 GR</option>
         </select>
         <input type="date" id="fecha">
         <button onclick="generar()">GENERAR ETIQUETA</button>
-        <button class="btn-print" onclick="window.print()">IMPRIMIR ETIQUETA</button>
+        <button class="btn-print" onclick="window.print()">IMPRIMIR</button>
     </div>
 
-    <!-- AQUÍ SOLO HAY UNA ETIQUETA AHORA -->
-    <div id="etiqueta">
-        <img src="image_39695b.png" class="logo" alt="Logo Vegusta">
-        
-        <div class="titulo">TOFU FIRME VEGUSTA</div>
-        
-        <svg id="barcode1" class="barcode-principal"></svg>
-        
-        <div id="txt-formato" class="formato-texto">6 PACK DE 1 KG.</div>
-
-        <div class="footer-info">
-            <svg id="barcode2" class="barcode-secundario"></svg>
+    <div id="contenedor-etiqueta">
+        <div id="etiqueta-real">
+            <!-- Logo usando tu archivo image_39695b.png -->
+            <img src="image_39695b.png" class="logo">
             
-            <div class="datos-derecha">
-                <span id="display-fecha" class="fecha-negrita"></span>
-                VIDA UTIL<br>
-                30 DÍAS<br><br>
-                REFRIGERAR ENTRE<br>
-                1 a 4 C°
+            <div class="titulo">TOFU FIRME VEGUSTA</div>
+            
+            <svg id="code1" class="barcode-main"></svg>
+            
+            <div id="display-formato" class="formato-txt"></div>
+
+            <div class="fila-inferior">
+                <svg id="code2"></svg>
+                
+                <div class="datos-derecha">
+                    <span id="display-fecha" style="font-size:13px"></span><br>
+                    VIDA UTIL 30 DÍAS<br><br>
+                    REFRIGERAR ENTRE<br>
+                    1 a 4 C°
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Poner fecha de hoy
         document.getElementById('fecha').valueAsDate = new Date();
 
         function generar() {
-            const select = document.getElementById('producto');
-            const item = select.options[select.selectedIndex];
-            const barcodePrincipal = item.getAttribute('data-barcode');
-            const textoFormato = item.value;
-            const fechaVal = document.getElementById('fecha').value;
+            const sel = document.getElementById('producto');
+            const opt = sel.options[sel.selectedIndex];
+            const f = document.getElementById('fecha').value.split('-');
 
-            // Fecha
-            if(fechaVal) {
-                const [y, m, d] = fechaVal.split('-');
-                document.getElementById('display-fecha').innerText = `${d}/${m}/${y}`;
-            }
+            // Actualizar textos
+            document.getElementById('display-formato').innerText = opt.value;
+            document.getElementById('display-fecha').innerText = `${f[2]}/${f[1]}/${f[0]}`;
 
-            document.getElementById('txt-formato').innerText = textoFormato;
-
-            // Código Barras Principal (El de arriba)
-            JsBarcode("#barcode1", barcodePrincipal, {
+            // Código grande
+            JsBarcode("#code1", opt.getAttribute('data-barcode'), {
                 format: "CODE128",
-                width: 2,
-                height: 50,
+                width: 2.5,
+                height: 60,
                 displayValue: true,
-                fontSize: 18,
-                fontOptions: "bold",
-                margin: 5
+                fontSize: 20,
+                fontOptions: "bold"
             });
 
-            // Código Barras Secundario (El de abajo a la izquierda)
-            JsBarcode("#barcode2", "1304261221", {
+            // Código pequeño
+            JsBarcode("#code2", "1304261221", {
                 format: "CODE128",
-                width: 1.2,
-                height: 35,
+                width: 1.3,
+                height: 40,
                 displayValue: true,
                 fontSize: 12,
-                fontOptions: "bold",
-                margin: 0
+                fontOptions: "bold"
             });
         }
 
+        // Iniciar
         window.onload = generar;
     </script>
 </body>
