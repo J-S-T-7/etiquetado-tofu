@@ -13,8 +13,6 @@
         .btn-print { background-color: #2980b9; }
 
         #zona-impresion { background: white; padding: 10px; display: inline-block; }
-        
-        /* Aumentamos un poco el ancho para que se vea mejor al imprimir */
         #etiqueta-unica { background: white; color: black; width: 450px; display: flex; flex-direction: column; align-items: center; padding: 20px; border: 1px solid #eee; }
 
         .logo { width: 220px; height: auto; margin-bottom: 10px; display: block; }
@@ -30,7 +28,7 @@
             body { background: none; padding: 0; }
             .panel { display: none; }
             #zona-impresion { padding: 0; }
-            #etiqueta-unica { border: none; margin: 0; width: 100%; } /* Ocupa el ancho del papel térmico */
+            #etiqueta-unica { border: none; margin: 0; width: 100%; }
         }
     </style>
 </head>
@@ -57,7 +55,7 @@
             <div class="fila-footer">
                 <svg id="code-secundario"></svg>
                 <div class="datos-info">
-                    <span id="txt-fecha" class="fecha-bold"></span>
+                    <span id="txt-vencimiento" class="fecha-bold"></span>
                     VIDA UTIL 30 DÍAS<br><br>
                     REFRIGERAR ENTRE<br>
                     1 a 4 C°
@@ -67,22 +65,47 @@
     </div>
 
     <script>
+        // Establecer fecha de hoy al cargar
         document.getElementById('fecha-input').valueAsDate = new Date();
 
         function generar() {
             const select = document.getElementById('producto');
             const selected = select.options[select.selectedIndex];
             const barcodeMain = selected.getAttribute('data-barcode');
-            const fechaVal = document.getElementById('fecha-input').value;
+            const fechaInput = document.getElementById('fecha-input').value;
 
-            if(fechaVal) {
-                const parts = fechaVal.split('-');
-                document.getElementById('txt-fecha').innerText = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            if (fechaInput) {
+                // 1. Lógica de Fecha de Vencimiento (+30 días)
+                const fechaLote = new Date(fechaInput + 'T00:00:00');
+                const fechaVenc = new Date(fechaLote);
+                fechaVenc.setDate(fechaLote.getDate() + 30);
+
+                const ddV = String(fechaVenc.getDate()).padStart(2, '0');
+                const mmV = String(fechaVenc.getMonth() + 1).padStart(2, '0');
+                const aaV = fechaVenc.getFullYear();
+                document.getElementById('txt-vencimiento').innerText = `${ddV}/${mmV}/${aaV}`;
+
+                // 2. Lógica de Número de Lote Dinámico (DDMMAA + 1221)
+                const ddL = String(fechaLote.getDate()).padStart(2, '0');
+                const mmL = String(fechaLote.getMonth() + 1).padStart(2, '0');
+                const aaL = String(fechaLote.getFullYear()).substring(2);
+                const loteCompleto = `${ddL}${mmL}${aaL}1221`;
+
+                // Generar código de barras inferior con el nuevo lote
+                JsBarcode("#code-secundario", loteCompleto, {
+                    format: "CODE128",
+                    width: 1.5,
+                    height: 45,
+                    displayValue: true,
+                    fontSize: 13,
+                    fontOptions: "bold",
+                    margin: 0
+                });
             }
 
             document.getElementById('txt-formato').innerText = selected.value;
 
-            // Código principal con más altura
+            // Código principal (EAN)
             JsBarcode("#code-principal", barcodeMain, {
                 format: "CODE128",
                 width: 2.8,
@@ -92,18 +115,8 @@
                 fontOptions: "bold",
                 margin: 0
             });
-
-            // Código secundario más legible
-            JsBarcode("#code-secundario", "1304261221", {
-                format: "CODE128",
-                width: 1.5,
-                height: 45,
-                displayValue: true,
-                fontSize: 13,
-                fontOptions: "bold",
-                margin: 0
-            });
         }
+        
         window.onload = generar;
     </script>
 </body>
