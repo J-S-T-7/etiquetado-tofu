@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador Etiquetas Vegusta</title>
+    <title>Generador Etiquetas Vegusta - Final</title>
     <style>
         body { font-family: Arial, sans-serif; background: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
         .no-print { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; }
@@ -12,49 +12,54 @@
             height: 600px;
             position: relative;
             background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
             -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
         }
 
-        .dato { 
-            position: absolute; 
-            font-weight: bold; 
-            color: black; 
-            background: white; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            text-align: center;
+        /* Logo y Título */
+        .header-section { text-align: center; width: 100%; }
+        #logo-vegusta { width: 320px; margin-bottom: 10px; }
+        .titulo-prod { font-size: 46px; font-weight: bold; margin: 5px 0; }
+
+        /* Código Principal */
+        .main-barcode-container { text-align: center; margin-top: 10px; }
+        #barcode1 { width: 650px; height: 160px; }
+        .barcode-val-big { font-size: 58px; font-weight: bold; letter-spacing: 8px; margin-top: -5px; }
+
+        /* Formato */
+        .formato-text { font-size: 48px; font-weight: 900; margin: 15px 0; }
+
+        /* BLOQUE INFERIOR (3 columnas iguales) */
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            width: 100%;
+            margin-top: auto;
+            align-items: end;
+            padding-bottom: 10px;
         }
 
-        /* Encabezado fijo como en la original */
-        #pos-logo { top: 20px; left: 350px; width: 300px; height: 130px; }
-        #pos-nombre-prod { top: 155px; left: 100px; width: 800px; font-size: 42px; height: 50px; }
-        
-        /* Código de barras principal */
-        #pos-barcode-main { top: 210px; left: 180px; width: 640px; height: 180px; }
-        #pos-val-barcode-main { top: 385px; left: 220px; width: 560px; font-size: 52px; letter-spacing: 5px; }
-        
-        /* Formato central */
-        #pos-formato { top: 450px; left: 80px; width: 840px; font-size: 44px; font-weight: 900; }
-        
-        /* BLOQUE INFERIOR (3 Columnas) */
-        /* 1. Lote (Izquierda) */
-        #pos-barcode-lote { top: 510px; left: 35px; width: 380px; height: 70px; }
-        #pos-val-lote { top: 575px; left: 60px; width: 330px; font-size: 32px; }
-        
-        /* 2. Vida Útil (Centro) */
-        #pos-vida-util { top: 510px; left: 420px; width: 220px; font-size: 28px; line-height: 1.2; flex-direction: column; }
-        
-        /* 3. Vencimiento y Refrigeración (Derecha) */
-        #pos-venc-block { top: 495px; right: 40px; width: 280px; flex-direction: column; }
-        .txt-venc { font-size: 36px; margin-bottom: 5px; }
-        .txt-refrig { font-size: 16px; line-height: 1.1; }
+        .col { display: flex; flex-direction: column; align-items: center; text-align: center; font-weight: bold; }
+
+        /* Columna Lote */
+        #barcode2 { width: 340px; height: 75px; }
+        .lote-val { font-size: 36px; margin-top: 5px; }
+
+        /* Columna Vida Útil */
+        .vida-util-label { font-size: 32px; line-height: 1.1; }
+
+        /* Columna Vencimiento */
+        .venc-val { font-size: 40px; margin-bottom: 5px; }
+        .refrig-label { font-size: 18px; line-height: 1.1; }
 
         @media print {
             .no-print { display: none; }
-            body { background: white; }
-            #etiqueta-real { box-shadow: none; margin: 0; }
+            body { background: white; padding: 0; }
+            #etiqueta-real { border: none; box-shadow: none; margin: 0; }
         }
         
         select, input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
@@ -74,29 +79,32 @@
 </div>
 
 <div id="etiqueta-real">
-    <div id="pos-logo" class="dato"><img src="image_39695b.png" style="width:100%; height:auto; object-position: top; object-fit: none; clip-path: inset(0 0 75% 0);"></div>
-    <div id="pos-nombre-prod" class="dato">TOFU FIRME VEGUSTA</div>
-    
-    <div id="pos-barcode-main" class="dato"><svg id="barcode1"></svg></div>
-    <div id="pos-val-barcode-main" class="dato"></div>
-    
-    <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato" style="margin-left:10px"></span></div>
-    
-    <!-- Bloque Inferior Izquierda: Lote -->
-    <div id="pos-barcode-lote" class="dato"><svg id="barcode2"></svg></div>
-    <div id="pos-val-lote" class="dato"></div>
-    
-    <!-- Bloque Inferior Centro: Vida Útil -->
-    <div id="pos-vida-util" class="dato">
-        <span>VIDA UTIL</span>
-        <span>30 DÍAS</span>
+    <div class="header-section">
+        <!-- Usamos el logo directamente para que no se corte -->
+        <img id="logo-vegusta" src="https://i.ibb.co/v4m0YmQ/logo-vegusta.png" alt="Logo">
+        <div class="titulo-prod">TOFU FIRME VEGUSTA</div>
     </div>
-    
-    <!-- Bloque Inferior Derecha: Vencimiento -->
-    <div id="pos-venc-block" class="dato">
-        <div id="fecha-venc" class="txt-venc"></div>
-        <div class="txt-refrig">
-            REFRIGERAR<br>ENTRE<br>1 a 4 C°
+
+    <div class="main-barcode-container">
+        <svg id="barcode1"></svg>
+        <div id="val-barcode1" class="barcode-val-big"></div>
+    </div>
+
+    <div class="formato-text">6 PACK DE <span id="txt-formato"></span></div>
+
+    <div class="footer-grid">
+        <div class="col">
+            <svg id="barcode2"></svg>
+            <div id="val-lote" class="lote-val"></div>
+        </div>
+        
+        <div class="col">
+            <div class="vida-util-label">VIDA UTIL<br>30 DÍAS</div>
+        </div>
+        
+        <div class="col">
+            <div id="fecha-venc" class="venc-val"></div>
+            <div class="refrig-label">REFRIGERAR<br>ENTRE<br>1 a 4 C°</div>
         </div>
     </div>
 </div>
@@ -123,12 +131,12 @@
         const lote = `${parts[2]}${parts[1]}${parts[0].substring(2)}${suffix}`;
 
         document.getElementById('txt-formato').innerText = prod + ".";
-        document.getElementById('pos-val-barcode-main').innerText = codBarra;
-        document.getElementById('pos-val-lote').innerText = lote;
+        document.getElementById('val-barcode1').innerText = codBarra;
+        document.getElementById('val-lote').innerText = lote;
         document.getElementById('fecha-venc').innerText = vencStr;
 
-        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.7, height: 150, margin: 0 });
-        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.2, height: 65, margin: 0 });
+        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.5, height: 160, margin: 0 });
+        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.2, height: 75, margin: 0 });
     }
     actualizar();
 </script>
