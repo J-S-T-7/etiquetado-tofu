@@ -30,25 +30,25 @@
             text-align: center;
         }
         
-        /* PARCHES DE LIMPIEZA TOTAL */
+        /* AJUSTES DE PRECISIÓN */
         
         /* Tapa el código de barras principal */
         #pos-barcode-main { top: 155px; left: 180px; width: 640px; height: 185px; }
         
-        /* Tapa el número y residuos laterales (como el de la imagen image_2e8b93.png) */
+        /* Tapa el número y los residuos laterales que vimos en image_2e8b93.png */
         #pos-val-barcode-main { top: 335px; left: 220px; width: 560px; font-size: 52px; letter-spacing: 5px; height: 75px; }
         
-        /* Tapa la línea de descripción del producto */
+        /* Tapa la línea de producto (centrado) */
         #pos-formato { top: 400px; left: 80px; width: 840px; font-size: 52px; font-weight: 900; height: 75px; }
         
-        /* Tapa el código de barras de lote lateral */
-        #pos-barcode-lote { top: 465px; left: 20px; width: 460px; height: 85px; }
+        /* Tapa el código de barras de lote sin pasarse */
+        #pos-barcode-lote { top: 465px; left: 20px; width: 450px; height: 85px; }
         
         /* Tapa el número de lote */
-        #pos-val-lote { top: 540px; left: 50px; width: 400px; font-size: 34px; height: 50px; }
+        #pos-val-lote { top: 540px; left: 50px; width: 380px; font-size: 34px; height: 50px; }
         
-        /* Tapa la fecha y textos de refrigeración */
-        #pos-vencimiento { top: 465px; right: 20px; width: 400px; font-size: 40px; font-weight: 900; height: 80px; }
+        /* Tapa la fecha vieja pero SE ALEJA de "VIDA UTIL" para no cortarlo */
+        #pos-vencimiento { top: 465px; right: 20px; width: 330px; font-size: 40px; font-weight: 900; height: 80px; justify-content: flex-end; padding-right: 10px; }
 
         @media print {
             .no-print { display: none; }
