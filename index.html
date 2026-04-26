@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador Etiquetas Vegusta - Final</title>
+    <title>Generador Etiquetas Vegusta - Estable</title>
     <style>
         body { font-family: Arial, sans-serif; background: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
         .no-print { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; }
@@ -15,42 +15,47 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px 30px;
+            padding: 10px 40px;
             box-sizing: border-box;
-            -webkit-print-color-adjust: exact;
+            overflow: hidden;
         }
 
-        /* Logo y Título Superior */
-        .header-section { text-align: center; width: 100%; margin-bottom: 5px; }
-        #logo-vegusta { width: 300px; height: auto; }
-        .titulo-prod { font-size: 44px; font-weight: bold; margin-top: 5px; }
+        /* Logo: Usando una versión de respaldo más estable */
+        .header-section { text-align: center; width: 100%; }
+        #logo-vegusta { width: 340px; margin-bottom: 0; }
+        .titulo-prod { font-size: 48px; font-weight: bold; margin: 0; transform: translateY(-10px); }
 
-        /* Código Principal y su Valor */
-        .main-barcode-container { text-align: center; margin-top: 5px; width: 100%; }
-        #barcode1 { width: 660px; height: 165px; }
-        .barcode-val-big { font-size: 60px; font-weight: bold; letter-spacing: 10px; margin-top: -5px; }
+        /* Código Principal */
+        .main-barcode-container { text-align: center; margin-top: 0; width: 100%; }
+        #barcode1 { width: 680px; height: 160px; }
+        .barcode-val-big { font-size: 62px; font-weight: bold; letter-spacing: 12px; margin-top: -10px; }
 
-        /* Texto de Formato Central */
-        .formato-text { font-size: 52px; font-weight: 900; margin: 15px 0; }
+        /* Formato */
+        .formato-text { font-size: 54px; font-weight: 900; margin: 10px 0; }
 
-        /* BLOQUE INFERIOR: 3 Columnas perfectamente alineadas */
+        /* Grilla Inferior Optimizada para evitar amontonamiento */
         .footer-grid {
             display: grid;
-            grid-template-columns: 1.2fr 1fr 1.2fr;
+            grid-template-columns: 1.3fr 1fr 1fr;
             width: 100%;
             margin-top: auto;
             align-items: end;
-            padding-bottom: 10px;
+            padding-bottom: 20px;
         }
 
-        .col { display: flex; flex-direction: column; align-items: center; text-align: center; font-weight: bold; }
+        .col { display: flex; flex-direction: column; font-weight: bold; }
 
-        /* Ajustes específicos por columna */
-        #barcode2 { width: 350px; height: 80px; }
-        .lote-val { font-size: 38px; margin-top: 5px; }
-        .vida-util-label { font-size: 34px; line-height: 1.1; margin-bottom: 5px; }
-        .venc-val { font-size: 42px; margin-bottom: 5px; }
-        .refrig-label { font-size: 18px; line-height: 1.1; }
+        /* Columna Lote (Izquierda) */
+        #barcode2 { width: 360px; height: 85px; }
+        .lote-val { font-size: 38px; margin-top: 5px; text-align: center; width: 360px; }
+
+        /* Columna Vida Útil (Centro) */
+        .vida-util-label { font-size: 36px; line-height: 1.1; text-align: center; margin-bottom: 10px; }
+
+        /* Columna Vencimiento (Derecha) */
+        .venc-block { text-align: right; }
+        .venc-val { font-size: 44px; margin-bottom: 5px; }
+        .refrig-label { font-size: 19px; line-height: 1.1; }
 
         @media print {
             .no-print { display: none; }
@@ -76,8 +81,8 @@
 
 <div id="etiqueta-real">
     <div class="header-section">
-        <!-- Logo integrado -->
-        <img id="logo-vegusta" src="https://i.ibb.co/v4m0YmQ/logo-vegusta.png" alt="Logo Vegusta">
+        <!-- Logo con link alternativo para evitar el error de "Image not found" -->
+        <img id="logo-vegusta" src="https://i.postimg.cc/mD8zMdbL/vegusta-logo.png" alt="Logo">
         <div class="titulo-prod">TOFU FIRME VEGUSTA</div>
     </div>
 
@@ -89,21 +94,20 @@
     <div class="formato-text">6 PACK DE <span id="txt-formato"></span></div>
 
     <div class="footer-grid">
-        <!-- Izquierda: Lote -->
-        <div class="col" style="align-items: flex-start; padding-left: 10px;">
+        <div class="col">
             <svg id="barcode2"></svg>
             <div id="val-lote" class="lote-val"></div>
         </div>
         
-        <!-- Centro: Vida Útil -->
         <div class="col">
             <div class="vida-util-label">VIDA UTIL<br>30 DÍAS</div>
         </div>
         
-        <!-- Derecha: Vencimiento -->
-        <div class="col" style="align-items: flex-end; padding-right: 10px;">
-            <div id="fecha-venc" class="venc-val"></div>
-            <div class="refrig-label">REFRIGERAR<br>ENTRE<br>1 a 4 C°</div>
+        <div class="col">
+            <div class="venc-block">
+                <div id="fecha-venc" class="venc-val"></div>
+                <div class="refrig-label">REFRIGERAR<br>ENTRE<br>1 a 4 C°</div>
+            </div>
         </div>
     </div>
 </div>
@@ -134,8 +138,8 @@
         document.getElementById('val-lote').innerText = lote;
         document.getElementById('fecha-venc').innerText = vencStr;
 
-        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.8, height: 165, margin: 0 });
-        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.3, height: 80, margin: 0 });
+        JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.8, height: 160, margin: 0 });
+        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.3, height: 85, margin: 0 });
     }
     actualizar();
 </script>
