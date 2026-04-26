@@ -11,9 +11,6 @@
             width: 1000px; 
             height: 600px;
             position: relative;
-            background-image: url('image_39695b.png'); 
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
             background-color: white;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -29,33 +26,30 @@
             justify-content: center;
             text-align: center;
         }
+
+        /* Encabezado fijo como en la original */
+        #pos-logo { top: 20px; left: 350px; width: 300px; height: 130px; }
+        #pos-nombre-prod { top: 155px; left: 100px; width: 800px; font-size: 42px; height: 50px; }
         
-        /* BLOQUES DE POSICIONAMIENTO PRECISOS */
+        /* Código de barras principal */
+        #pos-barcode-main { top: 210px; left: 180px; width: 640px; height: 180px; }
+        #pos-val-barcode-main { top: 385px; left: 220px; width: 560px; font-size: 52px; letter-spacing: 5px; }
         
-        /* Código de barras principal y su número */
-        #pos-barcode-main { top: 155px; left: 180px; width: 640px; height: 185px; }
-        #pos-val-barcode-main { top: 340px; left: 220px; width: 560px; font-size: 52px; letter-spacing: 5px; height: 60px; }
+        /* Formato central */
+        #pos-formato { top: 450px; left: 80px; width: 840px; font-size: 44px; font-weight: 900; }
         
-        /* Texto "6 PACK DE..." (Bajado para no chocar con el código principal) */
-        #pos-formato { top: 410px; left: 80px; width: 840px; font-size: 48px; font-weight: 900; height: 60px; }
+        /* BLOQUE INFERIOR (3 Columnas) */
+        /* 1. Lote (Izquierda) */
+        #pos-barcode-lote { top: 510px; left: 35px; width: 380px; height: 70px; }
+        #pos-val-lote { top: 575px; left: 60px; width: 330px; font-size: 32px; }
         
-        /* Lote (Código de barras inferior izquierdo y su número) */
-        #pos-barcode-lote { top: 480px; left: 35px; width: 430px; height: 85px; }
-        #pos-val-lote { top: 555px; left: 60px; width: 360px; font-size: 34px; height: 40px; }
+        /* 2. Vida Útil (Centro) */
+        #pos-vida-util { top: 510px; left: 420px; width: 220px; font-size: 28px; line-height: 1.2; flex-direction: column; }
         
-        /* Fecha de vencimiento (Superior derecha del bloque inferior) */
-        #pos-vencimiento { top: 480px; right: 50px; width: 300px; font-size: 38px; font-weight: 900; height: 45px; }
-        
-        /* Texto "REFRIGERAR ENTRE" (Posicionado justo debajo de la fecha) */
-        #pos-refrig-label { 
-            top: 525px; 
-            right: 50px; 
-            width: 300px; 
-            font-size: 18px; 
-            line-height: 1.1; 
-            height: 65px;
-            flex-direction: column;
-        }
+        /* 3. Vencimiento y Refrigeración (Derecha) */
+        #pos-venc-block { top: 495px; right: 40px; width: 280px; flex-direction: column; }
+        .txt-venc { font-size: 36px; margin-bottom: 5px; }
+        .txt-refrig { font-size: 16px; line-height: 1.1; }
 
         @media print {
             .no-print { display: none; }
@@ -80,18 +74,30 @@
 </div>
 
 <div id="etiqueta-real">
+    <div id="pos-logo" class="dato"><img src="image_39695b.png" style="width:100%; height:auto; object-position: top; object-fit: none; clip-path: inset(0 0 75% 0);"></div>
+    <div id="pos-nombre-prod" class="dato">TOFU FIRME VEGUSTA</div>
+    
     <div id="pos-barcode-main" class="dato"><svg id="barcode1"></svg></div>
     <div id="pos-val-barcode-main" class="dato"></div>
-    <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato" style="margin-left:15px"></span></div>
+    
+    <div id="pos-formato" class="dato">6 PACK DE <span id="txt-formato" style="margin-left:10px"></span></div>
+    
+    <!-- Bloque Inferior Izquierda: Lote -->
     <div id="pos-barcode-lote" class="dato"><svg id="barcode2"></svg></div>
     <div id="pos-val-lote" class="dato"></div>
     
-    <!-- Fecha y Refrigeración separadas para control total -->
-    <div id="pos-vencimiento" class="dato"></div>
-    <div id="pos-refrig-label" class="dato">
-        <span>REFRIGERAR</span>
-        <span>ENTRE</span>
-        <span>1 a 4 C°</span>
+    <!-- Bloque Inferior Centro: Vida Útil -->
+    <div id="pos-vida-util" class="dato">
+        <span>VIDA UTIL</span>
+        <span>30 DÍAS</span>
+    </div>
+    
+    <!-- Bloque Inferior Derecha: Vencimiento -->
+    <div id="pos-venc-block" class="dato">
+        <div id="fecha-venc" class="txt-venc"></div>
+        <div class="txt-refrig">
+            REFRIGERAR<br>ENTRE<br>1 a 4 C°
+        </div>
     </div>
 </div>
 
@@ -104,7 +110,6 @@
         const fechaVal = document.getElementById('fechaInput').value;
         const parts = fechaVal.split('-');
         
-        // Calcular vencimiento (30 días)
         const elab = new Date(fechaVal + 'T00:00:00');
         const venc = new Date(elab);
         venc.setDate(elab.getDate() + 30);
@@ -115,18 +120,15 @@
 
         const codBarra = (prod === '1 KG') ? '606110385695' : '606110385701';
         const suffix = (prod === '1 KG') ? '1221' : '1220';
-        
-        // Lote basado en fecha de elaboración
         const lote = `${parts[2]}${parts[1]}${parts[0].substring(2)}${suffix}`;
 
         document.getElementById('txt-formato').innerText = prod + ".";
         document.getElementById('pos-val-barcode-main').innerText = codBarra;
         document.getElementById('pos-val-lote').innerText = lote;
-        document.getElementById('pos-vencimiento').innerText = vencStr;
+        document.getElementById('fecha-venc').innerText = vencStr;
 
-        // Generar códigos de barras
         JsBarcode("#barcode1", codBarra, { format: "CODE128", displayValue: false, width: 3.7, height: 150, margin: 0 });
-        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.8, height: 75, margin: 0 });
+        JsBarcode("#barcode2", lote, { format: "CODE128", displayValue: false, width: 2.2, height: 65, margin: 0 });
     }
     actualizar();
 </script>
